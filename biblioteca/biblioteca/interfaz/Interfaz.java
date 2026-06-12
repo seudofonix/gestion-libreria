@@ -17,7 +17,7 @@ public class Interfaz {
     /**
      * Muestra el menú principal y retorna la opción elegida por el usuario.
      */
-    public static int menu() {
+    public static int menu() throws IndexOutOfBoundsException {
         System.out.println("\n===== SISTEMA DE GESTIÓN DE BIBLIOTECA =====");
         System.out.println(Constante.OPCION_PRESTAR       + ". Registrar préstamo");
         System.out.println(Constante.OPCION_DEVOLVER      + ". Registrar devolución");
@@ -33,7 +33,7 @@ public class Interfaz {
         System.out.println(Constante.OPCION_SALIR         + ". Salir");
         System.out.print("Ingrese una opción: ");
 
-        // TODO: validar que la entrada sea un número dentro del rango válido
+        
         return 0;
     }
 

@@ -45,6 +45,7 @@ public class Aplicacion {
 
         // 4. Ciclo principal de la aplicación
         int opcion;
+        
         do {
             opcion = Interfaz.menu();
 

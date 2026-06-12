@@ -3,6 +3,8 @@ package biblioteca.datos;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.StringTokenizer;
+import java.time.LocalDate;
 
 import net.datastructures.ProbeHashMap;
 import net.datastructures.LinkedPositionalList;
@@ -23,7 +25,34 @@ public class Dato {
             throws FileNotFoundException {
 
         ProbeHashMap<String, Libro> libros = new ProbeHashMap<>();
-        // TODO: implementar lectura del archivo y carga del mapa
+        
+        File archivo = new File(fileName);
+        String linea = "";
+        String isbn = "", titulo = "", autor = "", genero = "";
+        int anio = 0, ejemplares = 0;
+        try(Scanner scanner = new Scanner(archivo))
+        {
+        	while(scanner.hasNextLine())   // Leer linea por linea el archivo entero.
+        	{
+		        	linea = scanner.nextLine();
+		        	StringTokenizer tokenizer = new StringTokenizer(linea, ";");
+		        	
+		        	// Cargar secuencialmente
+		        	isbn = tokenizer.nextToken();
+		        	titulo = tokenizer.nextToken();
+		        	autor = tokenizer.nextToken();
+		        	genero = tokenizer.nextToken();
+		        	anio = Integer.parseInt(tokenizer.nextToken());
+		        	ejemplares = Integer.parseInt(tokenizer.nextToken());
+		        	
+		        	// Una vez cargados todos los datos, instanciar objeto y cargar en mapa.
+		        	libros.put(isbn, new Libro(isbn, titulo, autor, genero, anio, ejemplares));
+        	}
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+      
         return libros;
     }
 
@@ -38,7 +67,44 @@ public class Dato {
             throws FileNotFoundException {
 
         ProbeHashMap<String, Socio> socios = new ProbeHashMap<>();
-        // TODO: implementar lectura del archivo y carga del mapa
+        
+        String caracterNroSocio = "S";
+        File archivo = new File(fileName);
+        
+        String linea = "";
+        int nroSocio = 0;
+        String nombre = "";
+        String apellido = "";
+        String email = "";
+        boolean activo = true;
+        
+        try(Scanner scanner = new Scanner(archivo))
+        {
+        	while(scanner.hasNextLine())   // Leer linea por linea el archivo entero.
+        	{
+		        	linea = scanner.nextLine();
+		        	StringTokenizer tokenizer = new StringTokenizer(linea, ";");
+		        	
+		        	// Borrar la S al inicio.
+		        	String stringSocio = tokenizer.nextToken();
+		        	stringSocio = stringSocio.replace(caracterNroSocio, "");
+		        	
+		        	nroSocio = Integer.parseInt(stringSocio);
+		        	
+		        	nombre = tokenizer.nextToken();
+		        	apellido = tokenizer.nextToken();
+		        	email = tokenizer.nextToken();
+		        	activo = Boolean.parseBoolean(tokenizer.nextToken());
+		        	
+		        	// el cast mas horrible, pecado de la informatica
+		        	socios.put("" + nroSocio, new Socio(nroSocio, nombre, apellido, email, activo));
+        	}
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        
+        
         return socios;
     }
 
@@ -55,8 +121,54 @@ public class Dato {
             ProbeHashMap<String, Libro> libros)
             throws FileNotFoundException {
 
-        ProbeHashMap<String, LinkedPositionalList<Prestamo>> prestamos = new ProbeHashMap<>();
-        // TODO: implementar lectura del archivo y carga del mapa
-        return prestamos;
+	        ProbeHashMap<String, LinkedPositionalList<Prestamo>> prestamos = new ProbeHashMap<>();
+	        
+	        File archivo = new File(fileName);
+	        
+	        try(Scanner scanner = new Scanner(archivo))
+	        {
+	        	String linea = "";
+	        	String nroSocio = "";
+	        	String isbn = "";
+	        	LocalDate fechaPrestamo = null;
+	        	LocalDate fechaVencimiento = null;
+	        	int dia = 0;
+	        	int mes = 0;
+	        	int anio = 0;
+	        	
+	        	while(scanner.hasNextLine())   // Leer linea por linea el archivo entero.
+	        	{
+			        	linea = scanner.nextLine();
+			        	StringTokenizer tokenizer_dato = new StringTokenizer(linea, ";");
+			        	nroSocio = tokenizer_dato.nextToken();
+			        	isbn = tokenizer_dato.nextToken();
+			        	
+			        	// Tokenizar fecha con '/'
+			        	StringTokenizer tokenizer_fecha = new StringTokenizer(tokenizer_dato.nextToken(), "/");
+			        	dia = Integer.parseInt(tokenizer_fecha.nextToken());
+			        	mes = Integer.parseInt(tokenizer_fecha.nextToken());
+			        	anio = Integer.parseInt(tokenizer_fecha.nextToken());
+			        	fechaPrestamo = LocalDate.of(anio, mes, dia);
+			        	
+			        	tokenizer_fecha = new StringTokenizer(tokenizer_dato.nextToken(), "/");
+			        	dia = Integer.parseInt(tokenizer_fecha.nextToken());
+			        	mes = Integer.parseInt(tokenizer_fecha.nextToken());
+			        	anio = Integer.parseInt(tokenizer_fecha.nextToken());
+			        	fechaVencimiento = LocalDate.of(anio, mes, dia);
+			        	
+			        	Socio getSocio = socios.get(nroSocio);
+			        	Libro getLibro = libros.get(isbn);
+			        	
+			        	// Una vez cargado el prestamo, cargarlo en la lista del socio correspondiente.
+			        	Prestamo carga = new Prestamo(getSocio, getLibro, fechaPrestamo, fechaVencimiento);
+			        	
+			        	
+	        	}
+	        }
+	        catch (FileNotFoundException e) {
+	            e.printStackTrace();
+	        }
+	        
+	        return prestamos;
     }
 }
