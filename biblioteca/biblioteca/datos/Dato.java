@@ -121,54 +121,52 @@ public class Dato {
             ProbeHashMap<String, Libro> libros)
             throws FileNotFoundException {
 
+    		// Prestamos es un HashMap a listas, que pueden no existir (null).
 	        ProbeHashMap<String, LinkedPositionalList<Prestamo>> prestamos = new ProbeHashMap<>();
 	        
-	        File archivo = new File(fileName);
-	        
-	        try(Scanner scanner = new Scanner(archivo))
-	        {
-	        	String linea = "";
-	        	String nroSocio = "";
-	        	String isbn = "";
-	        	LocalDate fechaPrestamo = null;
-	        	LocalDate fechaVencimiento = null;
-	        	int dia = 0;
-	        	int mes = 0;
-	        	int anio = 0;
-	        	
-	        	while(scanner.hasNextLine())   // Leer linea por linea el archivo entero.
-	        	{
-			        	linea = scanner.nextLine();
-			        	StringTokenizer tokenizer_dato = new StringTokenizer(linea, ";");
-			        	nroSocio = tokenizer_dato.nextToken();
-			        	isbn = tokenizer_dato.nextToken();
-			        	
-			        	// Tokenizar fecha con '/'
-			        	StringTokenizer tokenizer_fecha = new StringTokenizer(tokenizer_dato.nextToken(), "/");
-			        	dia = Integer.parseInt(tokenizer_fecha.nextToken());
-			        	mes = Integer.parseInt(tokenizer_fecha.nextToken());
-			        	anio = Integer.parseInt(tokenizer_fecha.nextToken());
-			        	fechaPrestamo = LocalDate.of(anio, mes, dia);
-			        	
-			        	tokenizer_fecha = new StringTokenizer(tokenizer_dato.nextToken(), "/");
-			        	dia = Integer.parseInt(tokenizer_fecha.nextToken());
-			        	mes = Integer.parseInt(tokenizer_fecha.nextToken());
-			        	anio = Integer.parseInt(tokenizer_fecha.nextToken());
-			        	fechaVencimiento = LocalDate.of(anio, mes, dia);
-			        	
-			        	Socio getSocio = socios.get(nroSocio);
-			        	Libro getLibro = libros.get(isbn);
-			        	
-			        	// Una vez cargado el prestamo, cargarlo en la lista del socio correspondiente.
-			        	Prestamo carga = new Prestamo(getSocio, getLibro, fechaPrestamo, fechaVencimiento);
-			        	
-			        	
+	        try(Scanner scanner = new Scanner(new File(fileName)))
+	        {   	
+		        	while(scanner.hasNextLine())
+		        	{
+				        	String linea = scanner.nextLine();
+				        	StringTokenizer campos = new StringTokenizer(linea, ";");
+				        	
+				        	String nroSocio =  campos.nextToken();
+				        	String isbn     =	campos.nextToken();
+				        	LocalDate fechaPrestamo = parseFecha(campos.nextToken());
+				        	LocalDate fechaVencimiento = parseFecha(campos.nextToken());
+				        	
+				        	Socio socio = socios.get(nroSocio);
+				        	Libro libro = libros.get(isbn);
+				        	
+				        	Prestamo carga = new Prestamo(socio, libro, fechaPrestamo, fechaVencimiento);
+				        	
+				        	// Una lista de prestamos por socio. El prestamo se anade al final de esa lista.
+				        	if (prestamos.get(nroSocio) == null) {
+				        	    prestamos.put(nroSocio, new LinkedPositionalList<>());
+				        	}
+				        	
+				        	prestamos.get(nroSocio).addLast(carga);
+				        	
 	        	}
 	        }
-	        catch (FileNotFoundException e) {
-	            e.printStackTrace();
-	        }
+	        catch (FileNotFoundException e) { e.printStackTrace(); }
 	        
 	        return prestamos;
+    }
+    
+    /**
+     * Parsea LocalDate de una cadena de texto 
+     * formato "DD/MM/AA"
+     *
+     * @return LocalDate parseado de la cadena de entrada.
+     */
+    private static LocalDate parseFecha(String texto)
+    {
+	    	StringTokenizer partes = new StringTokenizer(texto, "/");
+	        int dia  = Integer.parseInt(partes.nextToken());
+	        int mes  = Integer.parseInt(partes.nextToken());
+	        int anio = Integer.parseInt(partes.nextToken());
+	        return LocalDate.of(anio, mes, dia);
     }
 }

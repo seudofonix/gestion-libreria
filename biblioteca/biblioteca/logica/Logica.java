@@ -1,8 +1,10 @@
 package biblioteca.logica;
 
 import java.time.LocalDate;
+import java.util.Iterator;
 
 import net.datastructures.ProbeHashMap;
+import net.datastructures.Entry;
 import net.datastructures.LinkedPositionalList;
 import net.datastructures.LinkedQueue;
 import biblioteca.modelo.Libro;
@@ -13,6 +15,10 @@ public class Logica {
 
     private ProbeHashMap<String, Libro> catalogo;
     private ProbeHashMap<String, Socio> socios;
+    private ProbeHashMap<String, LinkedPositionalList<Prestamo>> prestamosActivos;
+    private ProbeHashMap<String, LinkedPositionalList<Prestamo>> historialPrestamos;
+    private ProbeHashMap<String, LinkedPositionalList<Socio>> listaEspera;
+    
     // TODO: definir las estructuras adicionales que necesite
     // Pensar: ¿dónde guardar los préstamos activos?
     // Pensar: ¿cómo modelar la lista de espera por libro?
@@ -20,10 +26,16 @@ public class Logica {
 
     public Logica(ProbeHashMap<String, Libro> catalogo,
                   ProbeHashMap<String, Socio> socios,
-                  ProbeHashMap<String, LinkedPositionalList<Prestamo>> prestamosActivos) {
+                  ProbeHashMap<String, LinkedPositionalList<Prestamo>> prestamosActivos)
+    {
+    	
         this.catalogo = catalogo;
         this.socios   = socios;
-        // TODO: inicializar las estructuras internas a partir de los datos recibidos
+        this.prestamosActivos = prestamosActivos;
+        
+        this.historialPrestamos = new ProbeHashMap<String, LinkedPositionalList<Prestamo>>();
+        this.listaEspera = new ProbeHashMap<String, LinkedPositionalList<Socio>>();
+        
     }
 
     // ── INCREMENTO 1 ──────────────────────────────────────────────
@@ -35,9 +47,25 @@ public class Logica {
      * Condiciones: el socio debe estar activo y debe haber ejemplares disponibles.
      * @return true si el préstamo se realizó, false en caso contrario
      */
-    public boolean prestar(String nroSocio, String isbn) {
-        // TODO: implementar
-        return false;
+    public boolean prestar(String nroSocio, String isbn)
+    {    
+	    	Libro libro = catalogo.get(isbn);
+	    	Socio socio = socios.get(nroSocio);
+	    	
+	    	if ( libro.getEjemplaresDisponibles() < 1 || !socio.isActivo() )
+	        return false;
+	    	
+	    	LocalDate hoy = LocalDate.now();
+	    	LocalDate vencimiento = hoy.plusDays(14);
+	    	Prestamo prestamo = new Prestamo(socio, libro, hoy, vencimiento);
+	    	
+	    	// Anadir el prestamo a la lista del socio correspondiente.
+	    	if (prestamosActivos.get(socio.getNroSocio()) == null)
+	    	prestamosActivos.put(socio.getNroSocio(), new LinkedPositionalList<Prestamo>());
+	    	
+	    	prestamosActivos.get(socio.getNroSocio()).addLast(prestamo);
+	    	
+	    	return true;
     }
 
     /**
@@ -46,49 +74,93 @@ public class Logica {
      * @return true si la devolución se realizó, false en caso contrario
      */
     public boolean devolver(String nroSocio, String isbn) {
-        // TODO: implementar
-        return false;
+	        
+	        LinkedPositionalList<Prestamo> prestamos_socio = prestamosActivos.get(nroSocio);
+	        if (prestamos_socio == null)  return false;  // Socio no tiene prestamos.
+	        
+	        // Revisa si el libro existe en la lista de prestamos.
+	        Iterator<Prestamo> prestamo = prestamos_socio.iterator();
+	        while(prestamo.hasNext())
+	        {
+	        		Prestamo actual = prestamo.next();
+	        		if( isbn == actual.getLibro().getIsbn() )
+	        		{
+		        			prestamo.remove();  // Devolucion hecha
+		        			return true;
+	        		}
+	        }
+	        return false;  // No se encontro un prestamo para el libro especificado.
     }
-
+    
     /**
      * Busca un libro por su ISBN.
      * @return el Libro encontrado, o null si no existe
      */
     public Libro buscarPorIsbn(String isbn) {
-        // TODO: implementar
-        return null;
+    		return catalogo.get(isbn);
     }
 
     /**
      * Busca libros cuyo título contenga la cadena indicada (sin distinguir mayúsculas).
+     * @return Lista de coincidencias. De no haber retorna lista vacia.
      */
     public LinkedPositionalList<Libro> buscarPorTitulo(String titulo) {
-        // TODO: implementar
-        return null;
+    	
+    	/* Como el hashMap esta condicionado por ISBN, no nos queda de otra que iterar el mapa entero */
+    	LinkedPositionalList<Libro> coincidencias = new LinkedPositionalList<Libro>();
+    	
+    	// Crea un iterador a partir del hashmap catalogo. (ayudame torvalds)
+        for(Entry<String,Libro> entradaActual : catalogo.entrySet())
+        {
+	        	Libro libro = entradaActual.getValue();
+	        	if (libro.getTitulo().toLowerCase() == titulo.toLowerCase())  coincidencias.addLast(libro);
+        }
+        
+        return coincidencias;  // Si no hay coincidencias, la lista esta vacia.
     }
-
+    
     /**
      * Busca libros de un autor dado (sin distinguir mayúsculas).
+     * @return Lista de coincidencias. De no haber retorna lista vacia.
      */
     public LinkedPositionalList<Libro> buscarPorAutor(String autor) {
-        // TODO: implementar
-        return null;
+    	
+    	/* Como el hashMap esta condicionado por ISBN, no nos queda de otra que iterar el mapa entero */
+    	LinkedPositionalList<Libro> coincidencias = new LinkedPositionalList<Libro>();
+    	
+    	// Crea un iterador a partir del hashmap catalogo.
+        for(Entry<String,Libro> entradaActual : catalogo.entrySet())
+        {
+	        	Libro libro = entradaActual.getValue();
+	        	if (libro.getAutor().toLowerCase() == autor.toLowerCase())  coincidencias.addLast(libro);
+        }
+        
+        return coincidencias;  // Si no hay coincidencias, la lista esta vacia.
     }
 
     /**
      * Retorna todos los libros con al menos un ejemplar disponible.
+     * @return Lista de libros disponibles. De no haber retorna lista vacia.
      */
-    public LinkedPositionalList<Libro> listarDisponibles() {
-        // TODO: implementar
-        return null;
+    public LinkedPositionalList<Libro> listarDisponibles()
+    {
+	        LinkedPositionalList<Libro> disponibles = new LinkedPositionalList<Libro>();
+	        
+	        for(Entry<String,Libro> entradaActual : catalogo.entrySet())
+	        {
+	        	Libro libro = entradaActual.getValue();
+	        	if ( libro.getEjemplaresDisponibles() >= 1 )  disponibles.addLast(libro);
+	        }
+	        
+	        return disponibles;
     }
 
     /**
      * Retorna los préstamos activos de un socio.
+     * @return Lista de coincidencias. De no haber retorna lista vacia.
      */
     public LinkedPositionalList<Prestamo> prestamosActivosDeSocio(String nroSocio) {
-        // TODO: implementar
-        return null;
+        return prestamosActivos.get(nroSocio);
     }
 
     // ── INCREMENTO 2 ──────────────────────────────────────────────
@@ -98,7 +170,7 @@ public class Logica {
      * Se invoca cuando no hay ejemplares disponibles al momento del pedido.
      */
     public void agregarEspera(String nroSocio, String isbn) {
-        // TODO: implementar
+        
     }
 
     /**
