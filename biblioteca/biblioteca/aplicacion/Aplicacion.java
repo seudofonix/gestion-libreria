@@ -33,8 +33,7 @@ public class Aplicacion {
         try {
             catalogo  = Dato.cargarLibros(CargarParametros.getArchivoLibros());
             socios    = Dato.cargarSocios(CargarParametros.getArchivoSocios());
-            prestamos = Dato.cargarPrestamos(CargarParametros.getArchivoPrestamos(),
-                                             socios, catalogo);
+            prestamos = Dato.cargarPrestamos(CargarParametros.getArchivoPrestamos(), socios, catalogo);
         } catch (Exception e) {
             System.err.println("Error al cargar archivos de datos: " + e.getMessage());
             System.exit(-1);
@@ -84,7 +83,7 @@ public class Aplicacion {
                 	Libro libroBuscarISBN = logica.buscarPorIsbn(isbnBuscar);
                 	
                 	if (libroBuscarISBN != null) {
-                		Interfaz.mostrarMensaje("Se ha completado la busqueda correctamente");
+                		Interfaz.mostrarLibro(libroBuscarISBN);
                 	}else {
                 		Interfaz.mostrarMensaje("No se ha podido realizar la busqueda.");
                 	}
@@ -115,7 +114,6 @@ public class Aplicacion {
                 	String nroSocioPrestamo = Interfaz.pedirNroSocio();
                 	
                 	Interfaz.mostrarListaPrestamos(logica.prestamosActivosDeSocio(nroSocioPrestamo));
-                	
                 	
                     break;
 /////////////////////////////INCREMENTO 2

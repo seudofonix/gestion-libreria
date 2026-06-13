@@ -52,6 +52,10 @@ public class Logica {
 	    	Libro libro = catalogo.get(isbn);
 	    	Socio socio = socios.get(nroSocio);
 	    	
+	    	if (libro == null || socio == null) {
+	    		return false;
+	    	}
+	    	
 	    	if ( libro.getEjemplaresDisponibles() < 1 || !socio.isActivo() )
 	        return false;
 	    	
@@ -60,10 +64,11 @@ public class Logica {
 	    	Prestamo prestamo = new Prestamo(socio, libro, hoy, vencimiento);
 	    	
 	    	// Anadir el prestamo a la lista del socio correspondiente.
-	    	if (prestamosActivos.get(socio.getNroSocio()) == null)
-	    	prestamosActivos.put(socio.getNroSocio(), new LinkedPositionalList<Prestamo>());
+	    	if (prestamosActivos.get(nroSocio) == null)
+	    	prestamosActivos.put(nroSocio, new LinkedPositionalList<Prestamo>());
 	    	
-	    	prestamosActivos.get(socio.getNroSocio()).addLast(prestamo);
+	    	prestamosActivos.get(nroSocio).addLast(prestamo);
+	    	libro.setEjemplaresDisponibles(libro.getEjemplaresDisponibles() - 1); //baja disponibilidad
 	    	
 	    	return true;
     }
@@ -74,7 +79,7 @@ public class Logica {
      * @return true si la devolución se realizó, false en caso contrario
      */
     public boolean devolver(String nroSocio, String isbn) {
-	        
+    	
 	        LinkedPositionalList<Prestamo> prestamos_socio = prestamosActivos.get(nroSocio);
 	        if (prestamos_socio == null)  return false;  // Socio no tiene prestamos.
 	        
@@ -83,10 +88,12 @@ public class Logica {
 	        while(prestamo.hasNext())
 	        {
 	        		Prestamo actual = prestamo.next();
-	        		if( isbn == actual.getLibro().getIsbn() )
+	        		if(actual.getLibro().getIsbn().equals(isbn))
 	        		{
-		        			prestamo.remove();  // Devolucion hecha
-		        			return true;
+	        			Libro libro = actual.getLibro();
+	        			prestamo.remove();  // Devolucion hecha
+	        	    	libro.setEjemplaresDisponibles(libro.getEjemplaresDisponibles() + 1); //sube disponibilidad
+	        			return true;
 	        		}
 	        }
 	        return false;  // No se encontro un prestamo para el libro especificado.

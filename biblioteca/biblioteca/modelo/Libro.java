@@ -23,8 +23,8 @@ public class Libro {
 
 	@Override
 	public String toString() {
-		return "Libro [isbn=" + isbn + ", titulo=" + titulo + ", autor=" + autor + ", genero=" + genero
-				+ ", anioPublicacion=" + anioPublicacion + ", ejemplaresDisponibles=" + ejemplaresDisponibles + "]";
+		return "Libro: \nISBN= " + isbn + "\nTitulo= " + titulo + "\nAutor= " + autor + "\nGenero= " + genero
+				+ "\nAnio de publicacion= " + anioPublicacion + "\nEjemplares disponibles= " + ejemplaresDisponibles;
 	}
 
 	@Override
