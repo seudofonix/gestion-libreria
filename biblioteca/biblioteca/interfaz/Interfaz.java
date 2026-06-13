@@ -104,8 +104,11 @@ public class Interfaz {
 	public static void mostrarListaPrestamos(Iterable<Prestamo> prestamos) {
 		boolean hayPrestamos = false;
 		for (Prestamo prestamo : prestamos) {
-			System.out.println(prestamo);
-			hayPrestamos = true;
+			if(prestamo.isActivo())
+			{
+					System.out.println(prestamo);
+					hayPrestamos = true;
+			}
 		}
 		if (!hayPrestamos)
 			System.out.println("No hay prestamos");

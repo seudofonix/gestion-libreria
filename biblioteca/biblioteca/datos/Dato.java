@@ -46,7 +46,14 @@ public class Dato {
 		        	ejemplares = Integer.parseInt(tokenizer.nextToken());
 		        	
 		        	// Una vez cargados todos los datos, instanciar objeto y cargar en mapa.
-		        	libros.put(isbn, new Libro(isbn, titulo, autor, genero, anio, ejemplares));
+		        	Libro libro = new Libro(isbn, titulo, autor, genero, anio, ejemplares);
+		        	libros.put(isbn, libro);
+		        	
+		        	/* Los libros se estan cargando correctamente pero hay un problema porque
+		        	 * al cargarlos dentro del mapa y luego tratar de leerlos, el mapa devuelve NULL.		        
+		        	 * wtf ....
+		        	 * 
+		        	 * */
         	}
         }
         catch (FileNotFoundException e) {
@@ -68,29 +75,21 @@ public class Dato {
 
         ProbeHashMap<String, Socio> socios = new ProbeHashMap<>();
         
-        String caracterNroSocio = "S";
-        File archivo = new File(fileName);
-        
         String linea = "";
-        int nroSocio = 0;
+        String nroSocio = "";
         String nombre = "";
         String apellido = "";
         String email = "";
         boolean activo = true;
         
-        try(Scanner scanner = new Scanner(archivo))
+        try(Scanner scanner = new Scanner(new File(fileName)))
         {
         	while(scanner.hasNextLine())   // Leer linea por linea el archivo entero.
         	{
 		        	linea = scanner.nextLine();
 		        	StringTokenizer tokenizer = new StringTokenizer(linea, ";");
 		        	
-		        	// Borrar la S al inicio.
-		        	String stringSocio = tokenizer.nextToken();
-		        	stringSocio = stringSocio.replace(caracterNroSocio, "");
-		        	
-		        	nroSocio = Integer.parseInt(stringSocio);
-		        	
+		        	nroSocio = tokenizer.nextToken();
 		        	nombre = tokenizer.nextToken();
 		        	apellido = tokenizer.nextToken();
 		        	email = tokenizer.nextToken();
@@ -164,6 +163,7 @@ public class Dato {
     private static LocalDate parseFecha(String texto)
     {
 	    	StringTokenizer partes = new StringTokenizer(texto, "/");
+	    	
 	        int dia  = Integer.parseInt(partes.nextToken());
 	        int mes  = Integer.parseInt(partes.nextToken());
 	        int anio = Integer.parseInt(partes.nextToken());

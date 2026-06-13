@@ -4,18 +4,18 @@ import java.util.Objects;
 
 public class Socio {
 
-    private String nroSocio; // ????
+    private String nroSocio;
     private String nombre;
     private String apellido;
     private String email;
     private boolean activo;
 
-    public Socio(int nroSocio2, String nombre, String apellido,
+    public Socio(String nroSocio2, String nombre, String apellido,
                  String email, boolean activo) {
     	
-    		// TODO: El constructor especifica tipo int, el parametro es de tipo String. 
-    		// Hay que borrar la S para despues volver a anadirla ??????????????????????
-    		this.nroSocio = "S" + nroSocio2;
+    		// TODO: nroSocio2 originalmente era un int, lo cambie a string para hacernos la vida mas facil.
+    		// Toca preguntar si es correcto hacer esto. 
+    		this.nroSocio = nroSocio2;
     		this.nombre = nombre;
     		this.apellido = apellido;
     		this.email = email;

@@ -16,8 +16,10 @@ public class Logica {
     private ProbeHashMap<String, Libro> catalogo;
     private ProbeHashMap<String, Socio> socios;
     private ProbeHashMap<String, LinkedPositionalList<Prestamo>> prestamosActivos;
-    private ProbeHashMap<String, LinkedPositionalList<Prestamo>> historialPrestamos;
+    private ProbeHashMap<String, LinkedPositionalList<Prestamo>> historialPrestamos; 
     private ProbeHashMap<String, LinkedPositionalList<Socio>> listaEspera;
+    
+    private static final boolean MODO_DEBUG = System.getProperty("myApp.debug") != null;
     
     // TODO: definir las estructuras adicionales que necesite
     // Pensar: ¿dónde guardar los préstamos activos?
@@ -90,9 +92,10 @@ public class Logica {
 	        		Prestamo actual = prestamo.next();
 	        		if(actual.getLibro().getIsbn().equals(isbn))
 	        		{
+	        			// Libro encontrado, devolucion hecha. 
 	        			Libro libro = actual.getLibro();
-	        			prestamo.remove();  // Devolucion hecha
-	        	    	libro.setEjemplaresDisponibles(libro.getEjemplaresDisponibles() + 1); //sube disponibilidad
+	        			actual.setActivo(false);
+	        	    	libro.setEjemplaresDisponibles(libro.getEjemplaresDisponibles() + 1);
 	        			return true;
 	        		}
 	        }
@@ -101,7 +104,7 @@ public class Logica {
     
     /**
      * Busca un libro por su ISBN.
-     * @return el Libro encontrado, o null si no existe
+     * @return el Libro encontrado, o null si no existe.
      */
     public Libro buscarPorIsbn(String isbn) {
     		return catalogo.get(isbn);
@@ -115,12 +118,13 @@ public class Logica {
     	
     	/* Como el hashMap esta condicionado por ISBN, no nos queda de otra que iterar el mapa entero */
     	LinkedPositionalList<Libro> coincidencias = new LinkedPositionalList<Libro>();
+    	String busqueda = titulo.toLowerCase();
     	
     	// Crea un iterador a partir del hashmap catalogo. (ayudame torvalds)
         for(Entry<String,Libro> entradaActual : catalogo.entrySet())
         {
 	        	Libro libro = entradaActual.getValue();
-	        	if (libro.getTitulo().toLowerCase() == titulo.toLowerCase())  coincidencias.addLast(libro);
+	        	if (libro.getTitulo().toLowerCase().contains(busqueda))  coincidencias.addLast(libro);
         }
         
         return coincidencias;  // Si no hay coincidencias, la lista esta vacia.
@@ -134,12 +138,13 @@ public class Logica {
     	
     	/* Como el hashMap esta condicionado por ISBN, no nos queda de otra que iterar el mapa entero */
     	LinkedPositionalList<Libro> coincidencias = new LinkedPositionalList<Libro>();
+    	String busqueda = autor.toLowerCase();
     	
     	// Crea un iterador a partir del hashmap catalogo.
         for(Entry<String,Libro> entradaActual : catalogo.entrySet())
         {
 	        	Libro libro = entradaActual.getValue();
-	        	if (libro.getAutor().toLowerCase() == autor.toLowerCase())  coincidencias.addLast(libro);
+	        	if (libro.getAutor().toLowerCase().contains(busqueda))  coincidencias.addLast(libro);
         }
         
         return coincidencias;  // Si no hay coincidencias, la lista esta vacia.
@@ -155,8 +160,8 @@ public class Logica {
 	        
 	        for(Entry<String,Libro> entradaActual : catalogo.entrySet())
 	        {
-	        	Libro libro = entradaActual.getValue();
-	        	if ( libro.getEjemplaresDisponibles() >= 1 )  disponibles.addLast(libro);
+		        	Libro libro = entradaActual.getValue();
+		        	if ( libro.getEjemplaresDisponibles() >= 1 )  disponibles.addLast(libro);
 	        }
 	        
 	        return disponibles;
@@ -214,5 +219,10 @@ public class Logica {
     public LinkedPositionalList<Prestamo> prestamosVencidos(LocalDate hoy) {
         // TODO: implementar
         return null;
+    }
+    
+    private void imprimirDebug(String texto)
+    {
+    	if (MODO_DEBUG)  System.out.println(texto);
     }
 }
