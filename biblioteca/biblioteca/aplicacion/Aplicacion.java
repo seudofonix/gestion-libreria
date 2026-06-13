@@ -52,32 +52,73 @@ public class Aplicacion {
             switch (opcion) {
                 case Constante.OPCION_PRESTAR:
                     // TODO: pedir datos al usuario y llamar a logica.prestar(...)
+                	String nroSocioPrestar = Interfaz.pedirNroSocio();
+                	String isbnPrestar = Interfaz.pedirIsbn();
+                	
+                	boolean resultadoPrestar = logica.prestar(nroSocioPrestar, isbnPrestar);
+                	
+                	if (resultadoPrestar) {
+                		Interfaz.mostrarMensaje("Se ha realizado el prestamo correctamente.");
+                	}else {
+                		Interfaz.mostrarError("No se ha podido realizar el prestamo.");
+                	}
                     break;
 
                 case Constante.OPCION_DEVOLVER:
                     // TODO: pedir datos al usuario y llamar a logica.devolver(...)
+                	String nroSocioDevolver = Interfaz.pedirNroSocio();
+                	String isbnDevolver = Interfaz.pedirIsbn();
+                	
+                	boolean resultadoDevolver = logica.devolver(nroSocioDevolver, isbnDevolver);
+                	if (resultadoDevolver) {
+                		Interfaz.mostrarMensaje("Se ha realizado la devolucion correctamente.");
+                	}else {
+                		Interfaz.mostrarError("No se ha podido realizar la devolucion");
+                	}
+                	
                     break;
 
                 case Constante.OPCION_BUSCAR_ISBN:
                     // TODO: pedir ISBN y mostrar resultado de logica.buscarPorIsbn(...)
+                	String isbnBuscar = Interfaz.pedirIsbn();
+                	Libro libroBuscarISBN = logica.buscarPorIsbn(isbnBuscar);
+                	
+                	if (libroBuscarISBN != null) {
+                		Interfaz.mostrarMensaje("Se ha completado la busqueda correctamente");
+                	}else {
+                		Interfaz.mostrarMensaje("No se ha podido realizar la busqueda.");
+                	}
                     break;
 
                 case Constante.OPCION_BUSCAR_TITULO:
                     // TODO: pedir título y mostrar resultados de logica.buscarPorTitulo(...)
-                    break;
+                    String tituloBuscar = Interfaz.pedirTitulo();
+                    
+                    Interfaz.mostrarListaLibros(logica.buscarPorTitulo(tituloBuscar));
+                    
+                	break;
 
                 case Constante.OPCION_BUSCAR_AUTOR:
                     // TODO: pedir autor y mostrar resultados de logica.buscarPorAutor(...)
+                	String autorBuscar = Interfaz.pedirAutor();
+                	
+                	Interfaz.mostrarListaLibros(logica.buscarPorAutor(autorBuscar));
                     break;
 
                 case Constante.OPCION_DISPONIBLES:
                     // TODO: mostrar resultado de logica.listarDisponibles()
-                    break;
+                	Interfaz.mostrarListaLibros(logica.listarDisponibles());
+                	break;
 
                 case Constante.OPCION_PRESTAMOS_SOCIO:
                     // TODO: pedir nroSocio y mostrar logica.prestamosActivosDeSocio(...)
+                	String nroSocioPrestamo = Interfaz.pedirNroSocio();
+                	
+                	Interfaz.mostrarListaPrestamos(logica.prestamosActivosDeSocio(nroSocioPrestamo));
+                	
+                	
                     break;
-
+/////////////////////////////INCREMENTO 2
                 case Constante.OPCION_HISTORIAL:
                     // TODO: pedir nroSocio y mostrar logica.historialDeSocio(...)
                     break;
