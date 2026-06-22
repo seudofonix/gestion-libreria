@@ -50,7 +50,6 @@ public class Aplicacion {
 
             switch (opcion) {
                 case Constante.OPCION_PRESTAR:
-                    // TODO: pedir datos al usuario y llamar a logica.prestar(...)
                 	String nroSocioPrestar = Interfaz.pedirNroSocio();
                 	String isbnPrestar = Interfaz.pedirIsbn();
                 	
@@ -64,7 +63,6 @@ public class Aplicacion {
                     break;
 
                 case Constante.OPCION_DEVOLVER:
-                    // TODO: pedir datos al usuario y llamar a logica.devolver(...)
                 	String nroSocioDevolver = Interfaz.pedirNroSocio();
                 	String isbnDevolver = Interfaz.pedirIsbn();
                 	
@@ -78,7 +76,6 @@ public class Aplicacion {
                     break;
 
                 case Constante.OPCION_BUSCAR_ISBN:
-                    // TODO: pedir ISBN y mostrar resultado de logica.buscarPorIsbn(...)
                 	String isbnBuscar = Interfaz.pedirIsbn();
                 	Libro libroBuscarISBN = logica.buscarPorIsbn(isbnBuscar);
                 	
@@ -90,7 +87,6 @@ public class Aplicacion {
                     break;
 
                 case Constante.OPCION_BUSCAR_TITULO:
-                    // TODO: pedir título y mostrar resultados de logica.buscarPorTitulo(...)
                     String tituloBuscar = Interfaz.pedirTitulo();
                     
                     Interfaz.mostrarListaLibros(logica.buscarPorTitulo(tituloBuscar));
@@ -98,19 +94,16 @@ public class Aplicacion {
                 	break;
 
                 case Constante.OPCION_BUSCAR_AUTOR:
-                    // TODO: pedir autor y mostrar resultados de logica.buscarPorAutor(...)
                 	String autorBuscar = Interfaz.pedirAutor();
                 	
                 	Interfaz.mostrarListaLibros(logica.buscarPorAutor(autorBuscar));
                     break;
 
                 case Constante.OPCION_DISPONIBLES:
-                    // TODO: mostrar resultado de logica.listarDisponibles()
                 	Interfaz.mostrarListaLibros(logica.listarDisponibles());
                 	break;
 
                 case Constante.OPCION_PRESTAMOS_SOCIO:
-                    // TODO: pedir nroSocio y mostrar logica.prestamosActivosDeSocio(...)
                 	String nroSocioPrestamo = Interfaz.pedirNroSocio();
                 	
                 	Interfaz.mostrarListaPrestamos(logica.prestamosActivosDeSocio(nroSocioPrestamo));
@@ -118,16 +111,22 @@ public class Aplicacion {
                     break;
 /////////////////////////////INCREMENTO 2
                 case Constante.OPCION_HISTORIAL:
-                    // TODO: pedir nroSocio y mostrar logica.historialDeSocio(...)
+                	String nroSocioHistorial = Interfaz.pedirNroSocio();
+                	
+                	Interfaz.mostrarListaPrestamos(logica.historialDeSocio(nroSocioHistorial));
                     break;
 
                 case Constante.OPCION_RANKING:
-                    // TODO: pedir N y mostrar logica.librosMasSolicitados(N)
+                	int n = Interfaz.pedirN();
+                	
+                	Interfaz.mostrarListaLibros(logica.librosMasSolicitados(n));
                     break;
 
                 case Constante.OPCION_VENCIDOS:
-                    // TODO: pedir fecha con Interfaz.pedirFecha(...) y mostrar
-                    //       logica.prestamosVencidos(LocalDate)
+                	LocalDate fecha = Interfaz.pedirFecha("hoy");
+                	
+                	Interfaz.mostrarListaPrestamos(logica.prestamosVencidos(fecha));
+                	
                     break;
 
                 case Constante.OPCION_SALIR:

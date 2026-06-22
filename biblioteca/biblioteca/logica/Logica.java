@@ -182,6 +182,7 @@ public class Logica {
      * Se invoca cuando no hay ejemplares disponibles al momento del pedido.
      */
     public void agregarEspera(String nroSocio, String isbn) {
+
         
     }
 
@@ -220,9 +221,5 @@ public class Logica {
         // TODO: implementar
         return null;
     }
-    
-    private void imprimirDebug(String texto)
-    {
-    	if (MODO_DEBUG)  System.out.println(texto);
-    }
+
 }

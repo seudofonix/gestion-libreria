@@ -8,7 +8,7 @@ public class Prestamo {
     private Libro     libro;
     private LocalDate fechaPrestamo;
     private LocalDate fechaVencimiento;
-    private boolean   activo;
+    private boolean   activo = true;
 
     public Prestamo(Socio socio, Libro libro,
                     LocalDate fechaPrestamo, LocalDate fechaVencimiento) {
@@ -69,8 +69,8 @@ public class Prestamo {
 
 	@Override
 	public String toString() {
-		return "Prestamo [socio=" + socio + ", libro=" + libro + ", fechaPrestamo=" + fechaPrestamo
-				+ ", fechaVencimiento=" + fechaVencimiento + ", activo=" + activo + "]";
+		return "\nPrestamo: \nSocio= " + socio.getNombre() + libro + "\nFecha de prestamo= " + fechaPrestamo
+				+ "\nFecha de vencimiento= " + fechaVencimiento + "\nActivo= " + activo;
 	}
 
 }

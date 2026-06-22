@@ -37,26 +37,41 @@ public class Interfaz {
 		return Integer.parseInt(SC.nextLine());
 	}
 
+	/**
+	 * @return Isbn
+	 */
 	public static String pedirIsbn() {
 		System.out.print("Ingrese ISBN: ");
 		return SC.nextLine();
 	}
 
+	/**
+	 * @return nroSocio
+	 */
 	public static String pedirNroSocio() {
 		System.out.print("Ingrese número de socio: ");
 		return SC.nextLine();
 	}
 
+	/**
+	 * @return Titulo
+	 */
 	public static String pedirTitulo() {
 		System.out.print("Ingrese título (o parte del título): ");
 		return SC.nextLine();
 	}
 
+	/**
+	 * @return Autor
+	 */
 	public static String pedirAutor() {
 		System.out.print("Ingrese nombre del autor: ");
 		return SC.nextLine();
 	}
 
+	/**
+	 * @return N
+	 */
 	public static int pedirN() {
 		System.out.print("Ingrese cantidad de libros a mostrar: ");
 		return Integer.parseInt(SC.nextLine());
@@ -65,6 +80,10 @@ public class Interfaz {
 	/**
      * Solicita una fecha al usuario en formato dd/MM/yyyy y la retorna
      * como LocalDate. Debe validar el formato antes de retornar.
+     */
+    /**
+     * @param etiqueta
+     * @return Fecha
      */
     public static LocalDate pedirFecha(String etiqueta) {
     	LocalDate fecha = null;
@@ -84,6 +103,9 @@ public class Interfaz {
 
 	// ── Métodos de presentación de resultados ──
 
+	/**
+	 * @param Libro libro
+	 */
 	public static void mostrarLibro(Libro libro) {
 		if (libro == null) {
 			System.out.println("No hay libros para mostrar.");
@@ -91,6 +113,9 @@ public class Interfaz {
 			System.out.println(libro);
 	}
 
+	/**
+	 * @param Iterable<Libro> libro
+	 */
 	public static void mostrarListaLibros(Iterable<Libro> libros) {
 		boolean libroDisponible = false;
 		for (Libro libro : libros) {
@@ -101,6 +126,9 @@ public class Interfaz {
 			System.out.println("No hay libros disponibles");
 	}
 
+	/**
+	 * @param Iterable<Prestamo>prestamos
+	 */
 	public static void mostrarListaPrestamos(Iterable<Prestamo> prestamos) {
 		boolean hayPrestamos = false;
 		for (Prestamo prestamo : prestamos) {
@@ -114,10 +142,16 @@ public class Interfaz {
 			System.out.println("No hay prestamos");
 	}
 
+	/**
+	 * @param String mensaje
+	 */
 	public static void mostrarMensaje(String mensaje) {
 		System.out.println(mensaje);
 	}
 
+	/**
+	 * @param String mensaje
+	 */
 	public static void mostrarError(String mensaje) {
 		System.err.println("ERROR: " + mensaje);
 	}
