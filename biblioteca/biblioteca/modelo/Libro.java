@@ -46,50 +46,86 @@ public class Libro {
 				&& Objects.equals(isbn, other.isbn) && Objects.equals(titulo, other.titulo);
 	}
 
+	/**
+	 * @return Isbn
+	 */
 	public String getIsbn() {
 		return isbn;
 	}
 
+	/**
+	 * @param isbn
+	 */
 	public void setIsbn(String isbn) {
 		this.isbn = isbn;
 	}
 
+	/**
+	 * @return titulo
+	 */
 	public String getTitulo() {
 		return titulo;
 	}
 
+	/**
+	 * @param titulo
+	 */
 	public void setTitulo(String titulo) {
 		this.titulo = titulo;
 	}
 
+	/**
+	 * @return autor
+	 */
 	public String getAutor() {
 		return autor;
 	}
 
+	/**
+	 * @param autor
+	 */
 	public void setAutor(String autor) {
 		this.autor = autor;
 	}
 
+	/**
+	 * @return genero
+	 */
 	public String getGenero() {
 		return genero;
 	}
 
+	/**
+	 * @param genero
+	 */
 	public void setGenero(String genero) {
 		this.genero = genero;
 	}
 
+	/**
+	 * @return año publicacion
+	 */
 	public int getAnioPublicacion() {
 		return anioPublicacion;
 	}
 
+	/**
+	 * @param anioPublicacion
+	 */
 	public void setAnioPublicacion(int anioPublicacion) {
 		this.anioPublicacion = anioPublicacion;
 	}
 
+	/**
+	 * @return ejemplares disponibles
+	 */
 	public int getEjemplaresDisponibles() {
 		return ejemplaresDisponibles;
 	}
 
+	/**
+	 * @param ejemplaresDisponibles
+	 */
 	public void setEjemplaresDisponibles(int ejemplaresDisponibles) {
 		this.ejemplaresDisponibles = ejemplaresDisponibles;
 	}

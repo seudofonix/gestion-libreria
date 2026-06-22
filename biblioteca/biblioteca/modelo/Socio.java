@@ -46,42 +46,72 @@ public class Socio {
 				+ ", activo=" + activo + "]";
 	}
 
+	/**
+	 * @return nro socio
+	 */
 	public String getNroSocio() {
 		return nroSocio;
 	}
 
+	/**
+	 * @param nroSocio
+	 */
 	public void setNroSocio(String nroSocio) {
 		this.nroSocio = nroSocio;
 	}
 
+	/**
+	 * @return nombre
+	 */
 	public String getNombre() {
 		return nombre;
 	}
 
+	/**
+	 * @param nombre
+	 */
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
 
+	/**
+	 * @return apellido
+	 */
 	public String getApellido() {
 		return apellido;
 	}
 
+	/**
+	 * @param apellido
+	 */
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
 	}
 
+	/**
+	 * @return email
+	 */
 	public String getEmail() {
 		return email;
 	}
 
+	/**
+	 * @param email
+	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean isActivo() {
 		return activo;
 	}
 
+	/**
+	 * @param activo
+	 */
 	public void setActivo(boolean activo) {
 		this.activo = activo;
 	}
