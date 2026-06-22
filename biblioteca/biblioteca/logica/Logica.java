@@ -7,6 +7,7 @@ import net.datastructures.ProbeHashMap;
 import net.datastructures.Entry;
 import net.datastructures.LinkedPositionalList;
 import net.datastructures.LinkedQueue;
+import net.datastructures.HeapPriorityQueue;
 import biblioteca.modelo.Libro;
 import biblioteca.modelo.Socio;
 import biblioteca.modelo.Prestamo;
@@ -16,10 +17,10 @@ public class Logica {
     private ProbeHashMap<String, Libro> catalogo;
     private ProbeHashMap<String, Socio> socios;
     private ProbeHashMap<String, LinkedPositionalList<Prestamo>> prestamosActivos;
-    private ProbeHashMap<String, LinkedPositionalList<Prestamo>> historialPrestamos; 
-    private ProbeHashMap<String, LinkedPositionalList<Socio>> listaEspera;
+    private LinkedPositionalList<Prestamo> historialPrestamos; 
+    //  La lista de espera por cada libro esta definida dentro de la clase del libro.   
     
-    private static final boolean MODO_DEBUG = System.getProperty("myApp.debug") != null;
+    //private static final boolean MODO_DEBUG = System.getProperty("myApp.debug") != null;
     
     // TODO: definir las estructuras adicionales que necesite
     // Pensar: ¿dónde guardar los préstamos activos?
@@ -35,8 +36,7 @@ public class Logica {
         this.socios   = socios;
         this.prestamosActivos = prestamosActivos;
         
-        this.historialPrestamos = new ProbeHashMap<String, LinkedPositionalList<Prestamo>>();
-        this.listaEspera = new ProbeHashMap<String, LinkedPositionalList<Socio>>();
+        this.historialPrestamos = new LinkedPositionalList<>();
         
     }
 
@@ -70,7 +70,12 @@ public class Logica {
 	    	prestamosActivos.put(nroSocio, new LinkedPositionalList<Prestamo>());
 	    	
 	    	prestamosActivos.get(nroSocio).addLast(prestamo);
-	    	libro.setEjemplaresDisponibles(libro.getEjemplaresDisponibles() - 1); //baja disponibilidad
+	    	historialPrestamos.addLast(prestamo);
+	    	socio.anadirHistorial(prestamo);
+	    	// Hay historiales globales y especificos para cada socio.
+	    	// TODO: borrar estos comentarios pedorros antes de entregar
+	    	
+	    	libro.setEjemplaresDisponibles(libro.getEjemplaresDisponibles() - 1);
 	    	
 	    	return true;
     }
@@ -95,7 +100,9 @@ public class Logica {
 	        			// Libro encontrado, devolucion hecha. 
 	        			Libro libro = actual.getLibro();
 	        			actual.setActivo(false);
-	        	    	libro.setEjemplaresDisponibles(libro.getEjemplaresDisponibles() + 1);
+	        			libro.setEjemplaresDisponibles(libro.getEjemplaresDisponibles() + 1);
+	        			prestamosActivos.remove(libro.getIsbn()); // 
+	        			
 	        			return true;
 	        		}
 	        }
@@ -181,9 +188,8 @@ public class Logica {
      * Agrega un socio a la cola de espera de un libro.
      * Se invoca cuando no hay ejemplares disponibles al momento del pedido.
      */
-    public void agregarEspera(String nroSocio, String isbn) {
-
-        
+    public void agregarEspera(String nroSocio, String isbn){
+	   catalogo.get(isbn).anadirListaEspera(nroSocio);
     }
 
     /**
@@ -191,7 +197,8 @@ public class Logica {
      * automáticamente al primero en la cola y lo notifica.
      */
     public void asignarSiguienteEnEspera(String isbn) {
-        // TODO: implementar
+	    // TODO: Como se le notifica exactamente????
+	    catalogo.get(isbn).siguienteEnLista();
     }
 
     /**
@@ -199,8 +206,7 @@ public class Logica {
      * (activos e históricos), en orden cronológico.
      */
     public LinkedPositionalList<Prestamo> historialDeSocio(String nroSocio) {
-        // TODO: implementar
-        return null;
+        return socios.get(nroSocio).getHistorial(); // CUIDADO: Se pasa por referencia!!
     }
 
     /**
@@ -208,9 +214,30 @@ public class Logica {
      * @param n cantidad de libros a retornar
      */
     public LinkedPositionalList<Libro> librosMasSolicitados(int n) {
-        // TODO: implementar
-        return null;
-    }
+	    LinkedPositionalList<Libro> resultado = new LinkedPositionalList<>();
+
+	    if (n <= 0) {
+	        return resultado;
+	    }
+
+	    HeapPriorityQueue<Integer, Libro> ranking = new HeapPriorityQueue<>();
+
+	    for (Entry<String, Libro> entrada : catalogo.entrySet()) {
+	        String isbn = entrada.getKey();
+	        Integer cantidad = entrada.getValue().getVecesPrestado();
+
+	        if (cantidad != null && cantidad > 0) {
+	            // El heap entrega el menor; se niega para obtener primero el mayor.
+	            ranking.insert(-cantidad, entrada.getValue());
+	        }
+	    }
+
+	    while (!ranking.isEmpty() && resultado.size() < n) {
+	        resultado.addLast(ranking.removeMin().getValue());
+	    }
+
+	    return resultado;
+	}
 
     /**
      * Retorna todos los préstamos cuya fecha de vencimiento expiró
@@ -218,8 +245,19 @@ public class Logica {
      * @param hoy fecha actual
      */
     public LinkedPositionalList<Prestamo> prestamosVencidos(LocalDate hoy) {
-        // TODO: implementar
-        return null;
+	    
+	LinkedPositionalList<Prestamo> vencidos = new LinkedPositionalList<>();
+	Iterator<Prestamo> prestamo = historialPrestamos.iterator();
+	while (prestamo.hasNext())
+	{
+		Prestamo prestamoActual = prestamo.next();
+		// Solamente contar prestamos activos para fecha de vencimiento. 
+		if (prestamoActual.isActivo() && hoy.isAfter(prestamoActual.getFechaVencimiento()))
+		{
+			vencidos.addLast(prestamoActual);
+		}
+	}
+	return vencidos;	
     }
-
+    
 }

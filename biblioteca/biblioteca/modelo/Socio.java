@@ -1,6 +1,8 @@
 package biblioteca.modelo;
 
 import java.util.Objects;
+import java.util.Iterator;
+import net.datastructures.LinkedPositionalList;
 
 public class Socio {
 
@@ -9,17 +11,17 @@ public class Socio {
     private String apellido;
     private String email;
     private boolean activo;
+    private LinkedPositionalList<Prestamo> historial;
 
     public Socio(String nroSocio2, String nombre, String apellido,
                  String email, boolean activo) {
     	
-    		// TODO: nroSocio2 originalmente era un int, lo cambie a string para hacernos la vida mas facil.
-    		// Toca preguntar si es correcto hacer esto. 
     		this.nroSocio = nroSocio2;
     		this.nombre = nombre;
     		this.apellido = apellido;
     		this.email = email;
     		this.activo = activo;
+    		historial = new LinkedPositionalList<>();
     }
 
 	@Override
@@ -46,72 +48,52 @@ public class Socio {
 				+ ", activo=" + activo + "]";
 	}
 
-	/**
-	 * @return nro socio
-	 */
 	public String getNroSocio() {
 		return nroSocio;
 	}
+	
+	public void anadirHistorial(Prestamo prestamo) {
+		historial.addLast(prestamo);
+	}
 
-	/**
-	 * @param nroSocio
-	 */
+	public LinkedPositionalList<Prestamo> getHistorial()
+	{
+		// TODO: Devolver una referencia a un private como dios manda..?
+		return historial;
+	}
+
 	public void setNroSocio(String nroSocio) {
 		this.nroSocio = nroSocio;
 	}
 
-	/**
-	 * @return nombre
-	 */
 	public String getNombre() {
 		return nombre;
 	}
 
-	/**
-	 * @param nombre
-	 */
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
 
-	/**
-	 * @return apellido
-	 */
 	public String getApellido() {
 		return apellido;
 	}
 
-	/**
-	 * @param apellido
-	 */
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
 	}
 
-	/**
-	 * @return email
-	 */
 	public String getEmail() {
 		return email;
 	}
 
-	/**
-	 * @param email
-	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
-	/**
-	 * @return
-	 */
 	public boolean isActivo() {
 		return activo;
 	}
 
-	/**
-	 * @param activo
-	 */
 	public void setActivo(boolean activo) {
 		this.activo = activo;
 	}

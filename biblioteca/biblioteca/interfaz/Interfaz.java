@@ -33,7 +33,7 @@ public class Interfaz {
 		System.out.println(Constante.OPCION_SALIR + ". Salir");
 		System.out.print("Ingrese una opción: ");
 
-		//return 0;
+		
 		return Integer.parseInt(SC.nextLine());
 	}
 

@@ -1,6 +1,7 @@
 package biblioteca.modelo;
 
 import java.util.Objects;
+import net.datastructures.LinkedQueue;
 
 public class Libro {
 
@@ -10,6 +11,10 @@ public class Libro {
     private String genero;
     private int anioPublicacion;
     private int ejemplaresDisponibles;
+    private LinkedQueue<String> listaEspera;  // <--- String nroSocio 
+    private int vecesPrestado;
+
+
 
     public Libro(String isbn, String titulo, String autor, String genero,
                  int anioPublicacion, int ejemplaresDisponibles) {
@@ -19,11 +24,13 @@ public class Libro {
         this.genero = genero;
         this.anioPublicacion = anioPublicacion;
         this.ejemplaresDisponibles = ejemplaresDisponibles;
+        listaEspera = new LinkedQueue<>();
+        vecesPrestado = 0;
     }
 
 	@Override
 	public String toString() {
-		return "\nLibro: \nISBN= " + isbn + "\nTitulo= " + titulo + "\nAutor= " + autor + "\nGenero= " + genero
+		return "Libro: \nISBN= " + isbn + "\nTitulo= " + titulo + "\nAutor= " + autor + "\nGenero= " + genero
 				+ "\nAnio de publicacion= " + anioPublicacion + "\nEjemplares disponibles= " + ejemplaresDisponibles;
 	}
 
@@ -46,89 +53,67 @@ public class Libro {
 				&& Objects.equals(isbn, other.isbn) && Objects.equals(titulo, other.titulo);
 	}
 
-	/**
-	 * @return Isbn
-	 */
 	public String getIsbn() {
 		return isbn;
 	}
+	
+	public void anadirListaEspera(String nroSocio) {
+		listaEspera.enqueue(nroSocio);
+	}
+	
+	public String siguienteEnLista() {
+		return listaEspera.dequeue();
+	}
 
-	/**
-	 * @param isbn
-	 */
 	public void setIsbn(String isbn) {
 		this.isbn = isbn;
 	}
 
-	/**
-	 * @return titulo
-	 */
 	public String getTitulo() {
 		return titulo;
 	}
 
-	/**
-	 * @param titulo
-	 */
 	public void setTitulo(String titulo) {
 		this.titulo = titulo;
 	}
 
-	/**
-	 * @return autor
-	 */
 	public String getAutor() {
 		return autor;
 	}
 
-	/**
-	 * @param autor
-	 */
 	public void setAutor(String autor) {
 		this.autor = autor;
 	}
 
-	/**
-	 * @return genero
-	 */
 	public String getGenero() {
 		return genero;
 	}
 
-	/**
-	 * @param genero
-	 */
 	public void setGenero(String genero) {
 		this.genero = genero;
 	}
 
-	/**
-	 * @return año publicacion
-	 */
 	public int getAnioPublicacion() {
 		return anioPublicacion;
 	}
 
-	/**
-	 * @param anioPublicacion
-	 */
 	public void setAnioPublicacion(int anioPublicacion) {
 		this.anioPublicacion = anioPublicacion;
 	}
 
-	/**
-	 * @return ejemplares disponibles
-	 */
 	public int getEjemplaresDisponibles() {
 		return ejemplaresDisponibles;
 	}
 
-	/**
-	 * @param ejemplaresDisponibles
-	 */
 	public void setEjemplaresDisponibles(int ejemplaresDisponibles) {
 		this.ejemplaresDisponibles = ejemplaresDisponibles;
 	}
 
-	
+	public int getVecesPrestado() {
+		return vecesPrestado;
+	}
+
+	public void setVecesPrestado(int vecesPrestado) {
+		this.vecesPrestado = vecesPrestado;
+	}
 }
