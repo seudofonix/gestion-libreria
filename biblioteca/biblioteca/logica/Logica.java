@@ -38,6 +38,29 @@ public class Logica {
         
         this.historialPrestamos = new LinkedPositionalList<>();
         
+        
+        
+        // Inicializa el historial de prestamos para todos los socios.
+        Iterator<Entry<String,Socio>> entradaSocio = socios.entrySet().iterator();
+        while(entradaSocio.hasNext())
+        {
+        	entradaSocio.next().getValue().inicializarHistorial(prestamosActivos);
+        }
+        
+        // Copiar los prestamos activos al historial de prestamos. 
+        Iterator<Entry<String,LinkedPositionalList<Prestamo>>> entradaActual = prestamosActivos.entrySet().iterator();
+        while (entradaActual.hasNext())
+        {
+        	Iterator<Prestamo> entradaLista = entradaActual.next().getValue().iterator();
+        	while(entradaLista.hasNext())
+        	{
+        		Prestamo prestamoActual = entradaLista.next();
+        		Libro libroActual = prestamoActual.getLibro();
+        		historialPrestamos.addLast(prestamoActual);
+        		libroActual.setVecesPrestado(libroActual.getVecesPrestado()+1);;
+        	}        	
+        }
+        
     }
 
     // ── INCREMENTO 1 ──────────────────────────────────────────────
@@ -224,9 +247,9 @@ public class Logica {
 
 	    for (Entry<String, Libro> entrada : catalogo.entrySet()) {
 	        String isbn = entrada.getKey();
-	        Integer cantidad = entrada.getValue().getVecesPrestado();
+	        int cantidad = entrada.getValue().getVecesPrestado();
 
-	        if (cantidad != null && cantidad > 0) {
+	        if (cantidad > 0) {
 	            // El heap entrega el menor; se niega para obtener primero el mayor.
 	            ranking.insert(-cantidad, entrada.getValue());
 	        }
@@ -238,7 +261,7 @@ public class Logica {
 
 	    return resultado;
 	}
-
+    
     /**
      * Retorna todos los préstamos cuya fecha de vencimiento expiró
      * y que aún no fueron devueltos.

@@ -98,7 +98,7 @@ public class Interfaz {
     		}
     	}	
     	
-        return null;
+        return fecha;
     }
 
 	// ── Métodos de presentación de resultados ──
@@ -129,10 +129,10 @@ public class Interfaz {
 	/**
 	 * @param Iterable<Prestamo>prestamos
 	 */
-	public static void mostrarListaPrestamos(Iterable<Prestamo> prestamos) {
+	public static void mostrarListaPrestamos(Iterable<Prestamo> prestamos, boolean mostrarInactivos) {
 		boolean hayPrestamos = false;
 		for (Prestamo prestamo : prestamos) {
-			if(prestamo.isActivo())
+			if(prestamo.isActivo() || mostrarInactivos)
 			{
 					System.out.println(prestamo);
 					hayPrestamos = true;

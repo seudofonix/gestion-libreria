@@ -3,6 +3,8 @@ package biblioteca.modelo;
 import java.util.Objects;
 import java.util.Iterator;
 import net.datastructures.LinkedPositionalList;
+import net.datastructures.ProbeHashMap;
+import net.datastructures.Entry;
 
 public class Socio {
 
@@ -98,5 +100,23 @@ public class Socio {
 		this.activo = activo;
 	}
 
+	// Inicializa el historial de prestamos del socio a partir del hashMap de prestamos. 
+	public void inicializarHistorial(ProbeHashMap<String, LinkedPositionalList<Prestamo>> prestamos)
+	{
+		Iterator<Entry<String, LinkedPositionalList<Prestamo>>> entradaMapa = prestamos.entrySet().iterator();
+		while (entradaMapa.hasNext())
+		{
+			LinkedPositionalList<Prestamo> listaPrestamos = entradaMapa.next().getValue();
+			Iterator<Prestamo> entradaListaPrestamos = listaPrestamos.iterator();
+			while(entradaListaPrestamos.hasNext())
+			{
+				Prestamo prestamo = entradaListaPrestamos.next();
+				if(prestamo.getSocio().getNroSocio() == this.nroSocio)
+				{
+					historial.addLast(prestamo);
+				}
+			}
+		}
+	}
     
 }

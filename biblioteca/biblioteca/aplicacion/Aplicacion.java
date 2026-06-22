@@ -41,7 +41,9 @@ public class Aplicacion {
 
         // 3. Inicializar capa lógica
         Logica logica = new Logica(catalogo, socios, prestamos);
-
+        
+        
+        
         // 4. Ciclo principal de la aplicación
         int opcion;
         
@@ -106,14 +108,14 @@ public class Aplicacion {
                 case Constante.OPCION_PRESTAMOS_SOCIO:
                 	String nroSocioPrestamo = Interfaz.pedirNroSocio();
                 	
-                	Interfaz.mostrarListaPrestamos(logica.prestamosActivosDeSocio(nroSocioPrestamo));
+                	Interfaz.mostrarListaPrestamos(logica.prestamosActivosDeSocio(nroSocioPrestamo), false);
                 	
                     break;
 /////////////////////////////INCREMENTO 2
                 case Constante.OPCION_HISTORIAL:
                 	String nroSocioHistorial = Interfaz.pedirNroSocio();
                 	
-                	Interfaz.mostrarListaPrestamos(logica.historialDeSocio(nroSocioHistorial));
+                	Interfaz.mostrarListaPrestamos(logica.historialDeSocio(nroSocioHistorial), true);
                     break;
 
                 case Constante.OPCION_RANKING:
@@ -125,7 +127,7 @@ public class Aplicacion {
                 case Constante.OPCION_VENCIDOS:
                 	LocalDate fecha = Interfaz.pedirFecha("hoy");
                 	
-                	Interfaz.mostrarListaPrestamos(logica.prestamosVencidos(fecha));
+                	Interfaz.mostrarListaPrestamos(logica.prestamosVencidos(fecha), false);
                 	
                     break;
 
